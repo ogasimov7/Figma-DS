@@ -1,0 +1,39 @@
+/**
+ * GLOBAL STYLES — single entry point for ALL CSS
+ *
+ * Everything flows through this one file. Do not import CSS elsewhere
+ * (e.g. in layout.tsx) — multiple entry points can break hot reload.
+ *
+ * Import order matters:
+ *   1. Tailwind       → utility classes for the doc site layout
+ *   2. Tokens         → primitives + semantics (students fill these in)
+ *   3. Components     → ActionButton styles (consume semantic tokens)
+ */
+
+@import "tailwindcss";
+
+/* Tell Tailwind which files to scan for utility class names */
+@source "../../src/**/*.{ts,tsx}";
+
+/* ── LAYER 1: Primitive tokens (raw values — students add these) ── */
+@import "../styles/tokens/primitives.css";
+
+/* ── LAYER 2: Semantic tokens (global roles — students add these) ── */
+@import "../styles/tokens/semantics.css";
+
+/* ── Component styles (consume semantic tokens, not hardcoded colors) ── */
+@import "../components/design-system/action-button.css";        /* Approach 1: raw */
+@import "../components/design-system/action-button-shadcn.css";   /* Approach 2: shadcn */
+
+/* Map Next.js font variables into Tailwind's theme */
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+/* Base page styles — uses semantic tokens with fallbacks until students define them */
+body {
+  background: var(--color-background-neutral-subtlest-default, #ffffff);
+  color: var(--color-text-neutral-bold-default, #171717);
+  font-family: var(--font-sans, system-ui, sans-serif);
+}

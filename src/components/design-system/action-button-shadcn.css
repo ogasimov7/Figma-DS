@@ -1,0 +1,149 @@
+/**
+ * APPROACH 2: SHADCN/UI BUTTON — styles
+ *
+ * Same Figma "ActionButton" spec and semantic tokens as action-button.css.
+ * The shadcn Button keeps its cva base classes (inline-flex, gap-2,
+ * whitespace-nowrap, text-sm, transition-colors, focus-visible ring,
+ * disabled:pointer-events-none, h-9 …); this file only:
+ *   1. swaps the base values Figma defines differently for tokens
+ *   2. paints every variant / appearance / state with semantic tokens
+ *
+ * Tailwind utilities live in @layer utilities. This file is unlayered,
+ * so these rules win over the shadcn classes without !important.
+ *
+ * Figma properties → attributes (set by action-button-shadcn.tsx):
+ *   variant → data-variant, appearance → data-appearance,
+ *   state → data-state (pins the look), disabled → :disabled
+ */
+
+.action-button-shadcn {
+  --ab-bg: transparent;
+  --ab-text: var(--color-text-neutral-bold-default);
+  --ab-border: transparent;
+
+  /* shadcn base → Figma tokens */
+  gap: var(--spacing-2); /* gap-2 */
+  height: 2.25rem; /* h-9 — 36px, same as Figma */
+  padding: var(--spacing-2) var(--spacing-3); /* px-4 py-2 → Figma 8 / 12 */
+  border: 0;
+  border-radius: var(--border-radius-full); /* rounded-md → pill */
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-sm); /* text-sm */
+  font-weight: var(--font-weight-semibold); /* font-medium → semibold */
+  line-height: var(--font-line-height-sm);
+
+  /* Token colours */
+  background-color: var(--ab-bg);
+  color: var(--ab-text);
+  cursor: pointer;
+
+  /* Keep shadcn's focus-visible:ring-2 ring-offset-2, coloured by a token */
+  --tw-ring-color: var(--color-border-neutral-bold-default);
+}
+
+.action-button-shadcn[data-appearance="outline"] {
+  border: var(--border-width-1) solid var(--ab-border);
+}
+
+.action-button-shadcn[data-appearance="link"] .action-button__label {
+  text-decoration: underline;
+  text-decoration-thickness: from-font;
+  text-underline-position: from-font;
+}
+
+/* ── State selectors ───────────────────────────────────────────────
+ * hover   = real :hover, or data-state="hover"   (docs / playground)
+ * pressed = real :active, or data-state="pressed"
+ * A data-state attribute pins the look, so real hover/press is ignored.
+ */
+
+/* ── primary / filled ──────────────────────────────────────────── */
+.action-button-shadcn[data-variant="primary"][data-appearance="filled"] {
+  --ab-bg: var(--color-background-brand-bold-default);
+}
+.action-button-shadcn[data-variant="primary"][data-appearance="filled"]:is(:hover:not(:disabled, [data-state]), [data-state="hover"]) {
+  --ab-bg: var(--color-background-brand-bold-hovered);
+}
+.action-button-shadcn[data-variant="primary"][data-appearance="filled"]:is(:active:not(:disabled, [data-state]), [data-state="pressed"]) {
+  --ab-bg: var(--color-background-brand-bold-pressed);
+}
+.action-button-shadcn[data-variant="primary"][data-appearance="filled"]:disabled {
+  --ab-bg: var(--color-background-brand-bold-disabled);
+  --ab-text: var(--color-text-neutral-bold-disabled);
+}
+
+/* ── secondary / filled ────────────────────────────────────────── */
+.action-button-shadcn[data-variant="secondary"][data-appearance="filled"] {
+  --ab-bg: var(--color-background-brand-subtlest-default);
+}
+.action-button-shadcn[data-variant="secondary"][data-appearance="filled"]:is(:hover:not(:disabled, [data-state]), [data-state="hover"]) {
+  --ab-bg: var(--color-background-brand-subtlest-hovered);
+}
+.action-button-shadcn[data-variant="secondary"][data-appearance="filled"]:is(:active:not(:disabled, [data-state]), [data-state="pressed"]) {
+  --ab-bg: var(--color-background-brand-subtlest-pressed);
+}
+.action-button-shadcn[data-variant="secondary"][data-appearance="filled"]:disabled {
+  --ab-bg: var(--color-background-brand-subtlest-disabled);
+  --ab-text: var(--color-text-neutral-bold-disabled);
+}
+
+/* ── tertiary / filled ─────────────────────────────────────────── */
+.action-button-shadcn[data-variant="tertiary"][data-appearance="filled"] {
+  --ab-bg: var(--color-background-neutral-subtle-default);
+}
+.action-button-shadcn[data-variant="tertiary"][data-appearance="filled"]:is(:hover:not(:disabled, [data-state]), [data-state="hover"]) {
+  --ab-bg: var(--color-background-neutral-subtle-hovered);
+}
+.action-button-shadcn[data-variant="tertiary"][data-appearance="filled"]:is(:active:not(:disabled, [data-state]), [data-state="pressed"]) {
+  --ab-bg: var(--color-background-neutral-subtle-pressed);
+}
+.action-button-shadcn[data-variant="tertiary"][data-appearance="filled"]:disabled {
+  --ab-bg: var(--color-background-neutral-subtle-disabled);
+  --ab-text: var(--color-text-neutral-bold-disabled);
+}
+
+/* ── tertiary / outline ────────────────────────────────────────── */
+.action-button-shadcn[data-variant="tertiary"][data-appearance="outline"] {
+  --ab-border: var(--color-border-neutral-subtlest-default);
+}
+.action-button-shadcn[data-variant="tertiary"][data-appearance="outline"]:is(:hover:not(:disabled, [data-state]), [data-state="hover"]) {
+  --ab-bg: var(--color-background-neutral-subtlest-hovered);
+  --ab-border: var(--color-border-neutral-subtlest-hovered);
+}
+.action-button-shadcn[data-variant="tertiary"][data-appearance="outline"]:is(:active:not(:disabled, [data-state]), [data-state="pressed"]) {
+  --ab-bg: var(--color-background-neutral-subtlest-pressed);
+  --ab-border: var(--color-border-neutral-subtlest-hovered); /* Figma uses the hovered border when pressed */
+}
+.action-button-shadcn[data-variant="tertiary"][data-appearance="outline"]:disabled {
+  --ab-bg: var(--color-background-neutral-subtlest-disabled);
+  --ab-text: var(--color-text-neutral-bold-disabled);
+  --ab-border: var(--color-border-neutral-subtlest-disabled);
+}
+
+/* ── tertiary / link ───────────────────────────────────────────── */
+/* Hover is identical to default in Figma */
+.action-button-shadcn[data-variant="tertiary"][data-appearance="link"]:is(:active:not(:disabled, [data-state]), [data-state="pressed"]) {
+  --ab-bg: var(--color-background-neutral-subtlest-pressed);
+}
+.action-button-shadcn[data-variant="tertiary"][data-appearance="link"]:disabled {
+  --ab-bg: var(--color-background-neutral-subtlest-disabled);
+  --ab-text: var(--color-text-neutral-bold-disabled);
+}
+
+/* ── danger / outline ──────────────────────────────────────────── */
+.action-button-shadcn[data-variant="danger"][data-appearance="outline"] {
+  --ab-text: var(--color-text-danger-subtlest-default);
+  --ab-border: var(--color-border-danger-subtle-default);
+}
+.action-button-shadcn[data-variant="danger"][data-appearance="outline"]:is(:hover:not(:disabled, [data-state]), [data-state="hover"]) {
+  --ab-text: var(--color-text-danger-subtlest-hovered);
+  --ab-border: var(--color-border-danger-subtle-hovered);
+}
+.action-button-shadcn[data-variant="danger"][data-appearance="outline"]:is(:active:not(:disabled, [data-state]), [data-state="pressed"]) {
+  --ab-text: var(--color-text-danger-subtlest-pressed);
+  --ab-border: var(--color-border-danger-subtle-pressed);
+}
+.action-button-shadcn[data-variant="danger"][data-appearance="outline"]:disabled {
+  --ab-text: var(--color-text-danger-subtlest-disabled);
+  --ab-border: var(--color-border-danger-subtle-disabled);
+}

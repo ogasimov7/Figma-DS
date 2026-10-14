@@ -1,0 +1,186 @@
+/**
+ * APPROACH 1: RAW BUTTON — styles
+ *
+ * Mirrors the Figma "ActionButton" component set 1:1. Every colour,
+ * spacing, radius and type value is a token — no hardcoded hex values.
+ *
+ * Figma properties → HTML attributes (set by action-button.tsx):
+ *   variant     primary | secondary | tertiary | danger   → data-variant
+ *   appearance  filled | outline | link                   → data-appearance
+ *   state       default | hover | pressed                 → :hover / :active,
+ *                                                           or forced with data-state
+ *   disabled    true | false                              → :disabled
+ *   size        md                                        → data-size
+ *   iconLeft / iconRight                                  → .action-button__icon
+ *
+ * Combinations that exist in Figma:
+ *   primary   / filled
+ *   secondary / filled
+ *   tertiary  / filled | outline | link
+ *   danger    / outline
+ *
+ * Each combination sets three local custom properties (--ab-bg, --ab-text,
+ * --ab-border) per state; the base rule paints with them.
+ *
+ * For shadcn/ui styles, see action-button-shadcn.css
+ */
+
+.action-button {
+  --ab-bg: transparent;
+  --ab-text: var(--color-text-neutral-bold-default);
+  --ab-border: transparent;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-2);
+  height: 2.25rem; /* 36px — fixed in Figma; no sizing primitive at this step */
+  padding: var(--spacing-2) var(--spacing-3);
+  border: 0;
+  border-radius: var(--border-radius-full);
+  background-color: var(--ab-bg);
+  color: var(--ab-text);
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--font-line-height-sm);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
+}
+
+.action-button:disabled {
+  cursor: not-allowed;
+}
+
+/* Keyboard focus ring — not in Figma, kept for accessibility */
+.action-button:focus-visible {
+  outline: var(--border-width-2) solid var(--color-border-neutral-bold-default);
+  outline-offset: var(--border-width-2);
+}
+
+/* Outline appearance draws a 1px stroke (adds 2px to the width, as in Figma) */
+.action-button[data-appearance="outline"] {
+  border: var(--border-width-1) solid var(--ab-border);
+}
+
+/* Link appearance underlines the label only */
+.action-button[data-appearance="link"] .action-button__label {
+  text-decoration: underline;
+  text-decoration-thickness: from-font;
+  text-underline-position: from-font;
+}
+
+/* 16px icons from Figma (public/icons), tinted to the label colour */
+.action-button__icon {
+  flex-shrink: 0;
+  width: var(--sizing-4);
+  height: var(--sizing-4);
+  background-color: currentColor;
+  mask: var(--ab-icon) center / contain no-repeat;
+}
+
+.action-button__icon--leading {
+  --ab-icon: url("/icons/icon-leading.svg");
+}
+
+.action-button__icon--trailing {
+  --ab-icon: url("/icons/icon-trailing.svg");
+}
+
+/* ── State selectors ───────────────────────────────────────────────
+ * hover   = real :hover, or data-state="hover"   (docs / playground)
+ * pressed = real :active, or data-state="pressed"
+ * A data-state attribute pins the look, so real hover/press is ignored.
+ */
+
+/* ── primary / filled ──────────────────────────────────────────── */
+.action-button[data-variant="primary"][data-appearance="filled"] {
+  --ab-bg: var(--color-background-brand-bold-default);
+}
+.action-button[data-variant="primary"][data-appearance="filled"]:is(:hover:not(:disabled, [data-state]), [data-state="hover"]) {
+  --ab-bg: var(--color-background-brand-bold-hovered);
+}
+.action-button[data-variant="primary"][data-appearance="filled"]:is(:active:not(:disabled, [data-state]), [data-state="pressed"]) {
+  --ab-bg: var(--color-background-brand-bold-pressed);
+}
+.action-button[data-variant="primary"][data-appearance="filled"]:disabled {
+  --ab-bg: var(--color-background-brand-bold-disabled);
+  --ab-text: var(--color-text-neutral-bold-disabled);
+}
+
+/* ── secondary / filled ────────────────────────────────────────── */
+.action-button[data-variant="secondary"][data-appearance="filled"] {
+  --ab-bg: var(--color-background-brand-subtlest-default);
+}
+.action-button[data-variant="secondary"][data-appearance="filled"]:is(:hover:not(:disabled, [data-state]), [data-state="hover"]) {
+  --ab-bg: var(--color-background-brand-subtlest-hovered);
+}
+.action-button[data-variant="secondary"][data-appearance="filled"]:is(:active:not(:disabled, [data-state]), [data-state="pressed"]) {
+  --ab-bg: var(--color-background-brand-subtlest-pressed);
+}
+.action-button[data-variant="secondary"][data-appearance="filled"]:disabled {
+  --ab-bg: var(--color-background-brand-subtlest-disabled);
+  --ab-text: var(--color-text-neutral-bold-disabled);
+}
+
+/* ── tertiary / filled ─────────────────────────────────────────── */
+.action-button[data-variant="tertiary"][data-appearance="filled"] {
+  --ab-bg: var(--color-background-neutral-subtle-default);
+}
+.action-button[data-variant="tertiary"][data-appearance="filled"]:is(:hover:not(:disabled, [data-state]), [data-state="hover"]) {
+  --ab-bg: var(--color-background-neutral-subtle-hovered);
+}
+.action-button[data-variant="tertiary"][data-appearance="filled"]:is(:active:not(:disabled, [data-state]), [data-state="pressed"]) {
+  --ab-bg: var(--color-background-neutral-subtle-pressed);
+}
+.action-button[data-variant="tertiary"][data-appearance="filled"]:disabled {
+  --ab-bg: var(--color-background-neutral-subtle-disabled);
+  --ab-text: var(--color-text-neutral-bold-disabled);
+}
+
+/* ── tertiary / outline ────────────────────────────────────────── */
+.action-button[data-variant="tertiary"][data-appearance="outline"] {
+  --ab-border: var(--color-border-neutral-subtlest-default);
+}
+.action-button[data-variant="tertiary"][data-appearance="outline"]:is(:hover:not(:disabled, [data-state]), [data-state="hover"]) {
+  --ab-bg: var(--color-background-neutral-subtlest-hovered);
+  --ab-border: var(--color-border-neutral-subtlest-hovered);
+}
+.action-button[data-variant="tertiary"][data-appearance="outline"]:is(:active:not(:disabled, [data-state]), [data-state="pressed"]) {
+  --ab-bg: var(--color-background-neutral-subtlest-pressed);
+  --ab-border: var(--color-border-neutral-subtlest-hovered); /* Figma uses the hovered border when pressed */
+}
+.action-button[data-variant="tertiary"][data-appearance="outline"]:disabled {
+  --ab-bg: var(--color-background-neutral-subtlest-disabled);
+  --ab-text: var(--color-text-neutral-bold-disabled);
+  --ab-border: var(--color-border-neutral-subtlest-disabled);
+}
+
+/* ── tertiary / link ───────────────────────────────────────────── */
+/* Hover is identical to default in Figma */
+.action-button[data-variant="tertiary"][data-appearance="link"]:is(:active:not(:disabled, [data-state]), [data-state="pressed"]) {
+  --ab-bg: var(--color-background-neutral-subtlest-pressed);
+}
+.action-button[data-variant="tertiary"][data-appearance="link"]:disabled {
+  --ab-bg: var(--color-background-neutral-subtlest-disabled);
+  --ab-text: var(--color-text-neutral-bold-disabled);
+}
+
+/* ── danger / outline ──────────────────────────────────────────── */
+.action-button[data-variant="danger"][data-appearance="outline"] {
+  --ab-text: var(--color-text-danger-subtlest-default);
+  --ab-border: var(--color-border-danger-subtle-default);
+}
+.action-button[data-variant="danger"][data-appearance="outline"]:is(:hover:not(:disabled, [data-state]), [data-state="hover"]) {
+  --ab-text: var(--color-text-danger-subtlest-hovered);
+  --ab-border: var(--color-border-danger-subtle-hovered);
+}
+.action-button[data-variant="danger"][data-appearance="outline"]:is(:active:not(:disabled, [data-state]), [data-state="pressed"]) {
+  --ab-text: var(--color-text-danger-subtlest-pressed);
+  --ab-border: var(--color-border-danger-subtle-pressed);
+}
+.action-button[data-variant="danger"][data-appearance="outline"]:disabled {
+  --ab-text: var(--color-text-danger-subtlest-disabled);
+  --ab-border: var(--color-border-danger-subtle-disabled);
+}
